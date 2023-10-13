@@ -45,7 +45,7 @@ public class OnBoardActivity extends AppCompatActivity {
             }
             else{
                 //else its finish we will start Auth activity
-                startActivity(new Intent(OnBoardActivity.this,AuthActivity.class));
+                startActivity(new Intent(OnBoardActivity.this, LoginActivity.class));
                 finish();
             }
         });
@@ -113,15 +113,6 @@ public class OnBoardActivity extends AppCompatActivity {
 
         }
     };
-
-
-
-
-
-
-
-
-
 
 
 }

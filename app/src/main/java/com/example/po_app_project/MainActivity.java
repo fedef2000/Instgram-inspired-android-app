@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, OnBoardActivity.class));
             finish();
         }else{
-            startActivity(new Intent(MainActivity.this,AuthActivity.class));
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         }
 
