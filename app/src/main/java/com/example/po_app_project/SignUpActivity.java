@@ -1,11 +1,14 @@
 package com.example.po_app_project;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,12 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.ByteArrayOutputStream;
+
 
 public class SignUpActivity extends AppCompatActivity {
 
     DBHelper databaseHelper;
-    private TextInputLayout layoutEmail,layoutPassword,layoutConfirm;
-    private TextInputEditText txtEmail,txtPassword,txtConfirm;
+    private TextInputLayout layoutEmail,layoutUsername,layoutPassword,layoutConfirm;
+    private TextInputEditText txtEmail,txtUsername,txtPassword,txtConfirm;
     private TextView txtSignIn;
     private Button btnSignUp;
     private ProgressDialog dialog;
@@ -28,19 +33,21 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sign_up_activity);
+        setContentView(R.layout.activity_sign_up);
         init();
 
     }
 
     private void init() {
-        layoutPassword = findViewById(R.id.txtLayoutPasswordSignUp);
         layoutEmail = findViewById(R.id.txtLayoutEmailSignUp);
+        layoutUsername = findViewById(R.id.txtLayoutUsernameSignUp);
+        layoutPassword = findViewById(R.id.txtLayoutPasswordSignUp);
         layoutConfirm = findViewById(R.id.txtLayoutConfrimSignUp);
+        txtEmail = findViewById(R.id.txtEmailSignUp);
+        txtUsername = findViewById(R.id.txtUsernameSignUp);
         txtPassword = findViewById(R.id.txtPasswordSignUp);
         txtConfirm = findViewById(R.id.txtConfirmSignUp);
         txtSignIn = findViewById(R.id.txtSignIn);
-        txtEmail = findViewById(R.id.txtEmailSignUp);
         btnSignUp = findViewById(R.id.btnSignUp);
         dialog = new ProgressDialog(this);
         dialog.setCancelable(false);
@@ -57,7 +64,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         btnSignUp.setOnClickListener(v->{
 
-            register(txtEmail.getText().toString(), txtPassword.getText().toString(), txtConfirm.getText().toString());
+            register(txtEmail.getText().toString(), txtUsername.getText().toString(), txtPassword.getText().toString(), txtConfirm.getText().toString());
 
         });
 
@@ -72,6 +79,25 @@ public class SignUpActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!txtEmail.getText().toString().isEmpty()){
                     layoutEmail.setErrorEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        txtUsername.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!txtUsername.getText().toString().isEmpty()){
+                    layoutUsername.setErrorEnabled(false);
                 }
             }
 
@@ -122,29 +148,41 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    private void register (String email, String password, String confirmPassword){
-        if(email.equals("")||password.equals("")||confirmPassword.equals(""))
-            Toast.makeText(SignUpActivity.this, "All fields are mandatory", Toast.LENGTH_SHORT).show();
+    private void register (String email, String username, String password, String confirmPassword){
+
+        if(email.equals("")|| username.equals("") || password.equals("")||confirmPassword.equals(""))
+            Toast.makeText(SignUpActivity.this, "Inserisci tutti i campi", Toast.LENGTH_SHORT).show();
         else{
             if(password.equals(confirmPassword)){
-                Boolean checkUserEmail = databaseHelper.checkEmail(email);
-                if(checkUserEmail == false){
-                    Boolean insert = databaseHelper.insertData(email, password);
-                    if(insert == true){
-                        Toast.makeText(SignUpActivity.this, "Signup Successfully!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(),HomeActivity.class);
+                Boolean checkUserEmail = databaseHelper.checkIfUserExists(email,username);
+                if(!checkUserEmail){
+                    Boolean insert = databaseHelper.insertUser(email, username, password, getDefaultImage());
+                    if(insert){
+                        SharedPreferences userPref = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = userPref.edit();
+                        editor.putString("username", username);
+                        editor.apply();
+
+                        Intent intent = new Intent(getApplicationContext(), NewUserActivity.class);
                         startActivity(intent);
                     }else{
-                        Toast.makeText(SignUpActivity.this, "Signup Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUpActivity.this, "Si è verificato un errore!", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
-                    Toast.makeText(SignUpActivity.this, "User already exists! Please login", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Esiste già un utente con la mail inserita! Effettua il login", Toast.LENGTH_SHORT).show();
                 }
             }else{
-                Toast.makeText(SignUpActivity.this, "Invalid Password!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this, "Le due password sono diverse!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private byte[] getDefaultImage() {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.img1);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
     }
 
 }

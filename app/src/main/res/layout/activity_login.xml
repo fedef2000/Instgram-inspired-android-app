@@ -12,7 +12,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Blog App"
+        android:text="Enstagram"
         android:textSize="32sp"
         android:fontFamily="@font/leckerlione_regular"
         android:textColor="@color/colorGrey"
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/txtEmailSignIn"
-            android:hint="Email"
+            android:hint="Username"
             android:inputType="textEmailAddress"
             android:textSize="15sp"/>
 
@@ -58,7 +58,8 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="42dp"
-        android:text="Sign in"
+        android:theme="@style/AppTheme"
+        android:text="Login"
         android:id="@+id/btnSignIn"
         android:background="@drawable/btn_round"
         android:textColor="@color/colorWhite"
@@ -77,13 +78,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Dont have account?"
+            android:text="Non hai un account?"
             android:layout_marginRight="6dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign up"
+            android:text="Registrati"
             android:textColor="@color/colorPrimary"
             android:id="@+id/txtSignUp"
             android:layout_marginRight="6dp"/>

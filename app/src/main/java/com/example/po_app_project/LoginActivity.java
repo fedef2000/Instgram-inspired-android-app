@@ -1,20 +1,21 @@
 package com.example.po_app_project;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.po_app_project.Models.User;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -96,20 +97,25 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void login (String email, String password) {
-        dialog.setMessage("Logging in");
+    private void login (String username, String password) {
+        dialog.setMessage("Login in corso");
         dialog.show();
 
-        if(email.equals("")||password.equals(""))
-            Toast.makeText(LoginActivity.this, "All fields are mandatory", Toast.LENGTH_SHORT).show();
-        else{
-            Boolean checkCredentials = databaseHelper.checkEmailPassword(email, password);
-            if(checkCredentials == true){
-                Toast.makeText(LoginActivity.this, "Login Successfully!", Toast.LENGTH_SHORT).show();
+        if(username.equals("")||password.equals("")){
+            Toast.makeText(LoginActivity.this, "Inserisci tutti i campi", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        }else{
+            Boolean checkCredentials = databaseHelper.checkCredentials(username, password);
+            if(checkCredentials){
+                SharedPreferences userPref = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = userPref.edit();
+                editor.putString("username", username);
+                editor.apply();
+
                 Intent intent  = new Intent(getApplicationContext(), HomeActivity.class);
                 startActivity(intent);
             }else{
-                Toast.makeText(LoginActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Dati inseriti non corretti", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
         }
