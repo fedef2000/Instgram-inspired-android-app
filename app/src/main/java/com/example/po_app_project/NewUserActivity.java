@@ -77,10 +77,16 @@ public class NewUserActivity extends AppCompatActivity {
             circleImageView.setImageURI(uri);
             try {
                 Bitmap b = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                if (b.getHeight() > 1000){
-                    int n = b.getHeight()/1000;
-                    if (n == 1) n = 2;
-                    bitmap = Bitmap.createScaledBitmap(b, b.getWidth() / n, b.getHeight()/n, true);
+                if (b.getHeight() > 1000 || b.getWidth() > 2000){
+                    if(b.getWidth() > b.getHeight()){
+                        int n = b.getWidth()/1000;
+                        if (n == 1) n = 2;
+                        bitmap = Bitmap.createScaledBitmap(b, b.getWidth() / n, b.getHeight()/n, true);
+                    }else {
+                        int n = b.getHeight()/1000;
+                        if (n == 1) n = 2;
+                        bitmap = Bitmap.createScaledBitmap(b, b.getWidth() / n, b.getHeight()/n, true);
+                    }
                 }
                 else {
                     bitmap = b;

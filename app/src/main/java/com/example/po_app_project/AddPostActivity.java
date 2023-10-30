@@ -59,11 +59,18 @@ public class AddPostActivity extends AppCompatActivity {
         try {
             Bitmap b = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
             imgPost.setImageBitmap(b);
-            if (b.getHeight() > 1000){
-                int n = b.getHeight()/1000;
-                if (n == 1) n = 2;
-                bitmap = Bitmap.createScaledBitmap(b, b.getWidth() / n, b.getHeight()/n, true);
-                imgPost.setImageBitmap(bitmap);
+            if (b.getHeight() > 1000 || b.getWidth() > 2000){
+                if(b.getWidth() > b.getHeight()){
+                    int n = b.getWidth()/1000;
+                    if (n == 1) n = 2;
+                    bitmap = Bitmap.createScaledBitmap(b, b.getWidth() / n, b.getHeight()/n, true);
+                    imgPost.setImageBitmap(bitmap);
+                }else {
+                    int n = b.getHeight()/1000;
+                    if (n == 1) n = 2;
+                    bitmap = Bitmap.createScaledBitmap(b, b.getWidth() / n, b.getHeight()/n, true);
+                    imgPost.setImageBitmap(bitmap);
+                }
             }
             else {
                 bitmap = b;
@@ -116,10 +123,18 @@ public class AddPostActivity extends AppCompatActivity {
             imgPost.setImageURI(imgUri);
             try {
                 Bitmap b = MediaStore.Images.Media.getBitmap(getContentResolver(), imgUri);
-                if (b.getHeight() > 1000){
-                    int n = b.getHeight()/1000;
-                    if (n == 1) n = 2;
-                    bitmap = Bitmap.createScaledBitmap(b, b.getWidth() / n, b.getHeight()/n, true);
+                if (b.getHeight() > 1000 || b.getWidth() > 2000){
+                    if(b.getWidth() > b.getHeight()){
+                        int n = b.getWidth()/1000;
+                        if (n == 1) n = 2;
+                        bitmap = Bitmap.createScaledBitmap(b, b.getWidth() / n, b.getHeight()/n, true);
+                        imgPost.setImageBitmap(bitmap);
+                    }else {
+                        int n = b.getHeight()/1000;
+                        if (n == 1) n = 2;
+                        bitmap = Bitmap.createScaledBitmap(b, b.getWidth() / n, b.getHeight()/n, true);
+                        imgPost.setImageBitmap(bitmap);
+                    }
                 }
                 else {
                     bitmap = b;
